@@ -34,7 +34,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         try {
-           userList =  userDaoJDBC.getAllUsers();
+            userList = userDaoJDBC.getAllUsers();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

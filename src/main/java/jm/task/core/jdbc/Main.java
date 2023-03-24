@@ -24,12 +24,18 @@ public class Main {
         userService.dropUsersTable();
         userService.createUsersTable();
         userService.saveUser("Nik", "Park", (byte) 27);
-        userService.saveUser("Pic", "Park", (byte) 27);
-        userService.saveUser("Bob", "Park", (byte) 27);
-        userService.saveUser("Ton", "Park", (byte) 27);
-//        userService.removeUserById(1);
-        List<User> users = userService.getAllUsers();
+        System.out.println("User с именем – Nik добавлен в базу данных");
+        userService.saveUser("Pic", "Park1", (byte) 28);
+        System.out.println("User с именем – Pic добавлен в базу данных");
+        userService.saveUser("Bob", "Park2", (byte) 29);
+        System.out.println("User с именем – Bob добавлен в базу данных");
+        userService.saveUser("Tom", "Park3", (byte) 30);
+        System.out.println("User с именем – Tom добавлен в базу данных");
+
+        System.out.println(userService.getAllUsers());
+
         userService.cleanUsersTable();
+        userService.dropUsersTable();
 
         Connection connection = null;
 
