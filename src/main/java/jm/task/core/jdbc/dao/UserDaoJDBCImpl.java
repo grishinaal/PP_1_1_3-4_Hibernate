@@ -44,18 +44,22 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        String sql = "INSERT INTO users (name, lastName, age) VALUES ('" + name + "','" + lastName + "'," + age + ")";
+        String sql = "INSERT INTO users (name, lastName, age) VALUES (?, ?, ?)";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.executeUpdate(sql);
+            statement.setString(1, name);
+            statement.setString(2, lastName);
+            statement.setByte(3, age);
+            statement.executeUpdate();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
     }
 
     public void removeUserById(long id) {
-        String sql = "DELETE from users where id =" + id;
+        String sql = "DELETE from users where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)){
-            statement.executeUpdate(sql);
+            statement.setLong(1, id);
+            statement.executeUpdate();
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
         }
