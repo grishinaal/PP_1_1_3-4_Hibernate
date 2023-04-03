@@ -27,11 +27,11 @@ public class Main {
         userService.dropUsersTable();
         userService.createUsersTable();
         userService.saveUser("Nik", "Park", (byte) 27);
-        System.out.printf("User с именем – Nik добавлен в базу данных");
+        System.out.printf("User с именем – Nik добавлен в базу данных ");
         userService.saveUser("Pic", "Park1", (byte) 28);
-        System.out.printf("User с именем – Pic добавлен в базу данных");
+        System.out.printf("User с именем – Pic добавлен в базу данных ");
         userService.saveUser("Bob", "Park2", (byte) 29);
-        System.out.printf("User с именем – Bob добавлен в базу данных");
+        System.out.printf("User с именем – Bob добавлен в базу данных ");
         userService.saveUser("Tom", "Park3", (byte) 30);
         System.out.printf("User с именем – Tom добавлен в базу данных");
 
