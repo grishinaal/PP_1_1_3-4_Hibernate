@@ -3,12 +3,17 @@ package jm.task.core.jdbc.dao;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDaoJDBCImpl extends Util implements UserDao {
-    Connection connection = getConnection();
+public class UserDaoJDBCImpl implements UserDao {
+    private Util util;
+    private Connection connection = util.getConnection();
 
     public UserDaoJDBCImpl() {
 
@@ -21,8 +26,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
                 " lastName VARCHAR(40), " +
                 " age TINYINT, " +
                 " PRIMARY KEY ( id ))";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             System.out.println("Database has been created!");
         } catch (SQLException ex) {
@@ -32,8 +36,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void dropUsersTable() {
         String sql = "DROP TABLE IF EXISTS users";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = connection.createStatement()){
             statement.executeUpdate(sql);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -42,8 +45,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
         String sql = "INSERT INTO users (name, lastName, age) VALUES ('" + name + "','" + lastName + "'," + age + ")";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = connection.createStatement()){
             statement.executeUpdate(sql);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -52,8 +54,7 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
 
     public void removeUserById(long id) {
         String sql = "DELETE from users where id =" + id;
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = connection.createStatement()){
             statement.executeUpdate(sql);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
@@ -83,17 +84,13 @@ public class UserDaoJDBCImpl extends Util implements UserDao {
             if (preparedStatement != null) {
                 preparedStatement.close();
             }
-            if (connection != null) {
-                connection.close();
-            }
         }
         return userList;
     }
 
     public void cleanUsersTable() {
         String sql = "TRUNCATE TABLE users";
-        try (Connection conn = DriverManager.getConnection(DB_URL, DB_USERNAME, DB_PASSWORD)) {
-            Statement statement = conn.createStatement();
+        try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
         } catch (SQLException ex) {
             throw new RuntimeException(ex);
