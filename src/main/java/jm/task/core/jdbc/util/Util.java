@@ -36,12 +36,11 @@ public class Util {
                 try {
                     Configuration configuration = new Configuration();
 
-                    // Hibernate settings equivalent to hibernate.cfg.xml's properties
                     Properties settings = new Properties();
-                    settings.put(Environment.DRIVER, "com.mysql.jdbc.Driver");
-                    settings.put(Environment.URL, "jdbc:mysql://localhost:3306/new_schema");
-                    settings.put(Environment.USER, "root");
-                    settings.put(Environment.PASS, "root");
+                    settings.put(Environment.DRIVER, DB_DRIVER);
+                    settings.put(Environment.URL, DB_URL);
+                    settings.put(Environment.USER, DB_USERNAME);
+                    settings.put(Environment.PASS, DB_PASSWORD);
                     settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
 
                     settings.put(Environment.SHOW_SQL, "true");

@@ -8,6 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import javax.persistence.Query;
+import java.sql.SQLException;
 import java.util.List;
 
 import static jm.task.core.jdbc.util.Util.getSessionFactory;
@@ -24,7 +25,6 @@ public class UserDaoHibernateImpl implements UserDao {
             session.beginTransaction();
             session.createSQLQuery("create table if not exists users (id bigint auto_increment, name varchar(50), lastName varchar(50), age int, primary key(id))").executeUpdate();
             session.getTransaction().commit();
-            session.close();
         } catch (HibernateException ignore) {
         }
     }
@@ -41,36 +41,52 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Transaction transaction = null;
-        try (Session session = Util.getSession()) {
-            transaction = session.beginTransaction();
+        Session session = Util.getSession();
+        Transaction transaction = session.getTransaction();
+        try {
+            transaction.begin();
             session.save(new User(name, lastName, age));
             transaction.commit();
-            session.close();
         } catch (HibernateException ignore) {
+            transaction.rollback();
+        } finally {
+            session.close();
         }
+
     }
 
     @Override
     public void removeUserById(long id) {
-        try (Session session = Util.getSession()) {
+        Session session = Util.getSession();
+        Transaction transaction = session.getTransaction();
+
+        try {
+            transaction.begin();
             User user = new User();
             user.setId(id);
-            session.beginTransaction();
             session.delete(user);
-            session.getTransaction().commit();
-            session.close();
+            transaction.commit();
         } catch (HibernateException ignore) {
+            transaction.rollback();
+        } finally {
+            session.close();
         }
     }
 
     @Override
     public List<User> getAllUsers() {
+        Session session = Util.getSession();
+        Transaction transaction = session.getTransaction();
         List<User> result = null;
-        try (Session session = Util.getSession()) {
+        try {
+            transaction.begin();
             result = session.createQuery("from User", User.class).list();
+            transaction.commit();
             return result;
         } catch (HibernateException ignore) {
+            transaction.rollback();
+        } finally {
+            session.close();
         }
         return result;
     }
@@ -83,7 +99,6 @@ public class UserDaoHibernateImpl implements UserDao {
             Query query = session.createQuery(hql);
             query.executeUpdate();
             session.getTransaction().commit();
-            session.close();
         } catch (HibernateException ignore) {
 
         }

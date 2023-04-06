@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserServiceImpl implements UserService {
-//   private UserDao userDaoJDBC = new UserDaoJDBCImpl();
+    //   private UserDao userDaoJDBC = new UserDaoJDBCImpl();
     private UserDao userDaoHibernate = new UserDaoHibernateImpl();
 
     public void createUsersTable() {
@@ -34,13 +34,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
-    public List<User> getAllUsers() {
+    public List<User> getAllUsers() throws SQLException {
         List<User> userList = new ArrayList<>();
-        try {
-            userList = userDaoHibernate.getAllUsers();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        userList = userDaoHibernate.getAllUsers();
         return userList;
     }
 
