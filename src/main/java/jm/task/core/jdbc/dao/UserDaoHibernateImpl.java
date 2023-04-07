@@ -41,66 +41,66 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Session session = Util.getSession();
-        Transaction transaction = session.getTransaction();
-        try {
-            transaction.begin();
+        Transaction transaction = null;
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             session.save(new User(name, lastName, age));
             transaction.commit();
         } catch (HibernateException ignore) {
-            transaction.rollback();
-        } finally {
-            session.close();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
 
     }
 
     @Override
     public void removeUserById(long id) {
-        Session session = Util.getSession();
-        Transaction transaction = session.getTransaction();
-
-        try {
-            transaction.begin();
+        Transaction transaction = null;
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             User user = new User();
             user.setId(id);
             session.delete(user);
             transaction.commit();
         } catch (HibernateException ignore) {
-            transaction.rollback();
-        } finally {
-            session.close();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
+
     @Override
     public List<User> getAllUsers() {
-        Session session = Util.getSession();
-        Transaction transaction = session.getTransaction();
+        Transaction transaction = null;
         List<User> result = null;
-        try {
-            transaction.begin();
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             result = session.createQuery("from User", User.class).list();
             transaction.commit();
             return result;
         } catch (HibernateException ignore) {
-            transaction.rollback();
-        } finally {
-            session.close();
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
         return result;
     }
 
     @Override
     public void cleanUsersTable() {
-        try (Session session = Util.getSession()) {
-            session.beginTransaction();
+        Transaction transaction = null;
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
             String hql = "delete from User";
             Query query = session.createQuery(hql);
             query.executeUpdate();
-            session.getTransaction().commit();
+            transaction.commit();
         } catch (HibernateException ignore) {
-
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 }
